@@ -1,0 +1,108 @@
+# RAW
+diabetes_raw:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/db_diabetes.csv
+cardio_raw:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/db_cardio.csv
+cardiabetes_raw:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/db_cardiabetes.csv
+
+# PRIMARY (limpios)
+diabetes_clean:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/diabetes_clean.parquet
+cardio_clean:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/cardio_clean.parquet
+cardiabetes_clean:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/cardiabetes_clean.parquet
+
+# FEATURES
+diabetes_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/diabetes_features.parquet
+cardio_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/cardio_features.parquet
+cardiabetes_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/cardiabetes_features.parquet
+
+# REPORTING (figuras)
+diabetes_target_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/diabetes_target.png
+diabetes_hists_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/diabetes_hists.png
+
+cardio_target_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/cardio_target.png
+cardio_hists_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/cardio_hists.png
+
+cardiabetes_target_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/cardiabetes_target.png
+cardiabetes_hists_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/cardiabetes_hists.png
+
+# SPLITS — DIABETES
+diabetes_X_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/diabetes_X_train.parquet
+  
+diabetes_X_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/diabetes_X_test.parquet
+  
+diabetes_y_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/diabetes_y_train.parquet
+  
+diabetes_y_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/diabetes_y_test.parquet
+  
+
+# SPLITS — CARDIO
+cardio_X_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardio_X_train.parquet
+  
+cardio_X_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardio_X_test.parquet
+  
+cardio_y_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardio_y_train.parquet
+  
+cardio_y_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardio_y_test.parquet
+  
+
+# SPLITS — CARDIABETES
+cardiabetes_X_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardiabetes_X_train.parquet
+  
+cardiabetes_X_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardiabetes_X_test.parquet
+  
+cardiabetes_y_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardiabetes_y_train.parquet
+  
+cardiabetes_y_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/cardiabetes_y_test.parquet
+  

@@ -1,0 +1,49 @@
+# ───────── Python ─────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.dist/
+build/
+dist/
+.venv/
+venv/
+.env
+.env.*
+.venv
+
+# ───────── Jupyter ────────
+.ipynb_checkpoints/
+*.nbconvert.ipynb
+
+# ───────── IDE/OS ─────────
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ───────── Tests/Lint ─────
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# ───────── Logs ───────────
+*.log
+logs/
+
+# ───────── Kedro ──────────
+# Ignora toda la carpeta data/, excepto 01_raw (para subir los 3 CSV)
+data/**
+!data/01_raw/
+!data/01_raw/**
+# (si no quieres subir nada más que CSV en 01_raw, usa en su lugar:)
+# !data/01_raw/*.csv
+
+# Artefactos que no hace falta versionar
+.viz/

@@ -1,0 +1,21 @@
+
+preprocessing:
+  imputer_strategy_num: median
+  imputer_strategy_cat: most_frequent
+  scaler: standard
+  categorical_encoding: onehot
+
+quality:
+  iqr_factor: 1.5
+reporting_names:
+  diabetes: "Diabetes (Outcome)"
+  cardio: "Cardio (cardio)"
+  cardiabetes: "Cardiabetes (Diabetes)"
+targets:
+  diabetes: Tipo_Diabetes         # mejor que 'Sexo'
+  cardio: Riesgo_Cardiovascular   # <-- este corrige el error
+  cardiabetes: Diabetes
+
+split:
+  test_size: 0.2
+  random_state: 42
