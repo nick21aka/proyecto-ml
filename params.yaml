@@ -1,0 +1,18 @@
+classification:
+  # Usa aquí el mismo target que tengas en conf/base/parameters.yml
+  # por ejemplo: Diabetes_binary, Outcome, etc.
+  target: Diabetes_binary
+  cv_folds: 5
+
+split:
+  test_size: 0.2
+  random_state: 42
+
+regression:
+  # La columna numérica que usas como target de regresión (por ejemplo IMC, BMI...)
+  target: IMC
+  cv_folds: 5
+
+split_reg:
+  test_size: 0.2
+  random_state: 42

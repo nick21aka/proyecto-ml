@@ -1,0 +1,37 @@
+stages:
+  cls:
+    cmd: python -m kedro run --pipeline=classification
+    deps:
+      - data/04_feature/diabetes_features.parquet
+    params:
+      - classification.target
+      - classification.cv_folds
+      - split.test_size
+      - split.random_state
+    outs:
+      - data/07_model_output/classification_cv_results.json
+      - data/07_model_output/classification_best_name.json
+      - data/08_reporting/classification_test_metrics.json
+      - data/08_reporting/classification_model_compare.csv
+      - data/08_reporting/classification_auc_bar.png
+      - data/08_reporting/classification_f1_bar.png
+      - data/08_reporting/classification_roc_curve.png
+
+  reg:
+    cmd: python -m kedro run --pipeline=regression
+    deps:
+      - data/04_feature/cardiabetes_features.parquet
+    params:
+      - regression.target
+      - regression.cv_folds
+      - split_reg.test_size
+      - split_reg.random_state
+    outs:
+      - data/07_model_output/regression_cv_results.json
+      - data/08_reporting/regression_test_metrics.json
+      - data/08_reporting/regression_model_compare.csv   # CORREGIDO
+      - data/08_reporting/regression_rmse_bar.png
+
+metrics:
+  - data/08_reporting/classification_test_metrics.json
+  - data/08_reporting/regression_test_metrics.json

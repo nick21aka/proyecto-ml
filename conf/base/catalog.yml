@@ -106,3 +106,129 @@ cardiabetes_y_test:
   type: pandas.ParquetDataset
   filepath: data/05_model_input/cardiabetes_y_test.parquet
   
+# ============== CLASIFICACIÓN: salidas persistidas ==============
+
+best_classifier:
+  type: pickle.PickleDataset
+  filepath: data/06_models/best_classifier.pkl
+
+# Evitamos dependencia de 'text' -> guardamos como JSON {"best_name": "..."}
+classification_best_name:
+  type: json.JSONDataset
+  filepath: data/07_model_output/classification_best_name.json
+
+classification_cv_results:
+  type: json.JSONDataset
+  filepath: data/07_model_output/classification_cv_results.json
+
+classification_test_metrics:
+  type: json.JSONDataset
+  filepath: data/08_reporting/classification_test_metrics.json
+
+classification_roc_fig:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/classification_roc_curve.png
+  save_args:
+    format: png
+    dpi: 150
+    bbox_inches: tight
+
+classification_model_compare:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/classification_model_compare.csv
+  save_args:
+    index: false
+
+classification_auc_bar:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/classification_auc_bar.png
+  save_args:
+    format: png
+    dpi: 150
+    bbox_inches: tight
+
+classification_f1_bar:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/classification_f1_bar.png
+  save_args:
+    format: png
+    dpi: 150
+    bbox_inches: tight
+
+# ============== REGRESIÓN (cardiabetes / Colesterol_Total) ==============
+
+# Alias de features: usamos el dataset combinado cardiabetes_features
+# y lo referenciamos como regression_features para el pipeline de regresión.
+regression_features:
+  type: pandas.ParquetDataset
+  filepath: data/04_feature/cardiabetes_features.parquet
+
+# Splits de entrenamiento / prueba
+reg_X_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/reg_X_train.parquet
+
+reg_X_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/reg_X_test.parquet
+
+reg_y_train:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/reg_y_train.parquet
+
+reg_y_test:
+  type: pandas.ParquetDataset
+  filepath: data/05_model_input/reg_y_test.parquet
+
+# Modelo seleccionado (best_regressor) y resultados de validación cruzada
+best_regressor:
+  type: pickle.PickleDataset
+  filepath: data/06_models/best_regressor.pkl
+
+regression_cv_results:
+  type: json.JSONDataset
+  filepath: data/07_model_output/regression_cv_results.json
+
+# Métricas de evaluación en test (RMSE, MAE, R², etc.)
+regression_test_metrics:
+  type: json.JSONDataset
+  filepath: data/08_reporting/regression_test_metrics.json
+
+# Comparativa de modelos (tabla y gráfico RMSE CV)
+regression_model_compare:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/regression_model_compare.csv
+  save_args:
+    index: false
+
+regression_rmse_bar:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/regression_rmse_bar.png
+  save_args:
+    format: png
+    dpi: 150
+    bbox_inches: tight
+
+# Predicho vs real (CSV) y figuras de predicciones y residuales
+regression_pred_vs_true:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/regression_pred_vs_true.csv
+  save_args:
+    index: false
+
+regression_pred_vs_true_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/regression_pred_vs_true.png
+  save_args:
+    format: png
+    dpi: 150
+    bbox_inches: tight
+
+regression_resid_plot:
+  type: matplotlib.MatplotlibDataset
+  filepath: data/08_reporting/regression_resid_plot.png
+  save_args:
+    format: png
+    dpi: 150
+    bbox_inches: tight
+

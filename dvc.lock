@@ -1,0 +1,74 @@
+schema: '2.0'
+stages:
+  cls:
+    cmd: python -m kedro run --pipeline=classification
+    deps:
+    - path: data/04_feature/diabetes_features.parquet
+      hash: md5
+      md5: 73fb43d2c1b4071d07907ac235b6f87f
+      size: 235091
+    params:
+      params.yaml:
+        classification.cv_folds: 5
+        classification.target: Diabetes_binary
+        split.random_state: 42
+        split.test_size: 0.2
+    outs:
+    - path: data/07_model_output/classification_best_name.json
+      hash: md5
+      md5: a53dc86247da6a47a8e99492bdfd303f
+      size: 4
+    - path: data/07_model_output/classification_cv_results.json
+      hash: md5
+      md5: 5e9a182c6e9bf9e8ae595c01b48ea08b
+      size: 1636
+    - path: data/08_reporting/classification_auc_bar.png
+      hash: md5
+      md5: 5066e93575158fd6bf267cf84de2189d
+      size: 35801
+    - path: data/08_reporting/classification_f1_bar.png
+      hash: md5
+      md5: f02f613951cd39734cedc1fc324a71f1
+      size: 36576
+    - path: data/08_reporting/classification_model_compare.csv
+      hash: md5
+      md5: d61c562981740cd245401581a3bae8a3
+      size: 556
+    - path: data/08_reporting/classification_roc_curve.png
+      hash: md5
+      md5: 27ec381d7b15ce56fa1728737338bfea
+      size: 30185
+    - path: data/08_reporting/classification_test_metrics.json
+      hash: md5
+      md5: 7835eaa3d1b445994e02571fcbed71ee
+      size: 261
+  reg:
+    cmd: python -m kedro run --pipeline=regression
+    deps:
+    - path: data/04_feature/cardiabetes_features.parquet
+      hash: md5
+      md5: f3fd5a54bc306ebf565507d9aef96bea
+      size: 844064
+    params:
+      params.yaml:
+        regression.cv_folds: 5
+        regression.target: IMC
+        split_reg.random_state: 42
+        split_reg.test_size: 0.2
+    outs:
+    - path: data/07_model_output/regression_cv_results.json
+      hash: md5
+      md5: aa16b34a1000da9ab2cb3cb05a86ba70
+      size: 1187
+    - path: data/08_reporting/regression_model_compare.csv
+      hash: md5
+      md5: d4bd6cb38975e7ea103037aa75901aa0
+      size: 346
+    - path: data/08_reporting/regression_rmse_bar.png
+      hash: md5
+      md5: 113704056c39fd8164d2a095865a559b
+      size: 31355
+    - path: data/08_reporting/regression_test_metrics.json
+      hash: md5
+      md5: 1ff43e1adaddd9f82a90dfadf7cd18a0
+      size: 120

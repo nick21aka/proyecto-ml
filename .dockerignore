@@ -1,0 +1,18 @@
+# artefactos y cosas que no deben ir en la imagen
+logs/
+data/**           # montaremos /data como volumen al ejecutar
+notebooks/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.ipynb_checkpoints/
+.venv/
+env/
+venv/
+.git/
+.gitignore
+.dvc/cache/
+.dvc/tmp/
+.env

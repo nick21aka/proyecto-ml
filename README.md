@@ -155,6 +155,18 @@ kedro run --pipeline=dataprep
 pip install jupyterlab
 jupyter lab
 
+# Cómo levantar Airflow y ejecutar el DAG
+```powershell
+# 1) Inicializar (crea DB y usuario airflow/airflow)
+docker compose -f docker-compose.airflow.yml up airflow-init
+
+# 2) Levantar servicios
+docker compose -f docker-compose.airflow.yml up -d
+
+# 3) UI en http://localhost:8081  (usuario: airflow / pass: airflow)
+
+# 4) (Opcional) disparar manualmente
+docker exec -it proyecto-ml-airflow-webserver-1 bash -lc "airflow dags trigger kedro_both_pipelines"
 
 #Licencia
 

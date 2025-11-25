@@ -1,4 +1,3 @@
-
 preprocessing:
   imputer_strategy_num: median
   imputer_strategy_cat: most_frequent
@@ -7,15 +6,64 @@ preprocessing:
 
 quality:
   iqr_factor: 1.5
+
 reporting_names:
   diabetes: "Diabetes (Outcome)"
   cardio: "Cardio (cardio)"
   cardiabetes: "Cardiabetes (Diabetes)"
-targets:
-  diabetes: Tipo_Diabetes         # mejor que 'Sexo'
-  cardio: Riesgo_Cardiovascular   # <-- este corrige el error
-  cardiabetes: Diabetes
 
+# -----------------------
+#      CLASIFICACIÓN
+# -----------------------
+classification:
+  target: Tipo_Diabetes     # <-- tu columna target REAL en diabetes_features
+  cv_folds: 5
+
+# -----------------------
+#        SPLIT
+# -----------------------
 split:
   test_size: 0.2
   random_state: 42
+
+# -----------------------
+#        REGRESIÓN
+# -----------------------
+regression:
+  target: "IMC"             # <-- target numérico REAL en cardiabetes_features
+  cv_folds: 5
+
+split_reg:
+  test_size: 0.2
+  random_state: 42
+
+# -----------------------
+#    GRIDS DE MODELOS
+# -----------------------
+regression_grids:
+  linreg: {}
+
+  ridge:
+    alpha: [0.1, 1.0, 10.0]
+
+  lasso:
+    alpha: [0.001, 0.01, 0.1, 1.0]
+
+  rf:
+    n_estimators: [200, 400]
+    max_depth: [None, 5, 10]
+    min_samples_split: [2, 5]
+
+  gbr:
+    n_estimators: [200, 400]
+    learning_rate: [0.05, 0.1]
+    max_depth: [2, 3, 4]
+
+  svr:
+    C: [0.1, 1.0, 10.0]
+    epsilon: [0.01, 0.1]
+    kernel: ["rbf"]
+
+  knn:
+    n_neighbors: [3, 5, 7]
+    weights: ["uniform", "distance"]

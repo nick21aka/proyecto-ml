@@ -1,25 +1,38 @@
-"""Registro de pipelines del proyecto.
-
-Expone:
-- "__default__": pipeline por defecto.
-- "dataprep": preparación (Fase 3).
-- "data_science": split train/test (prep DS).
-"""
+# src/proyecto_ml/pipeline_registry.py
+from __future__ import annotations
 from kedro.pipeline import Pipeline
-from proyecto_ml.pipelines.dataprep import pipeline as dataprep
-from proyecto_ml.pipelines.data_science import pipeline as data_science
+
+# Pipelines principales
+from proyecto_ml.pipelines.dataprep import create_pipeline as create_dataprep_pipeline
+from proyecto_ml.pipelines.classification import create_pipeline as create_classification_pipeline
+
+# Import seguro de regression
+try:
+    from proyecto_ml.pipelines.regression import create_pipeline as create_regression_pipeline
+    _HAS_REGRESSION = True
+except Exception as e:
+    print(f"[pipeline_registry] Aviso: no se pudo importar regression: {e}")
+    _HAS_REGRESSION = False
 
 
 def register_pipelines() -> dict[str, Pipeline]:
-    """Registra y devuelve los pipelines disponibles del proyecto."""
-    dp = dataprep.create_pipeline()
-    ds = data_science.create_pipeline()
-    return {
-        "__default__": dp + ds,   # si prefieres que 'kedro run' ejecute ambos
+    """Registra todos los pipelines disponibles en el proyecto."""
+
+    dp = create_dataprep_pipeline()
+    cls = create_classification_pipeline()
+
+    pipelines: dict[str, Pipeline] = {
         "dataprep": dp,
-        "data_science": ds,
+        "classification": cls,
+        "__default__": cls,
     }
 
-from proyecto_ml.pipeline_registry import register_pipelines
-pipes = register_pipelines()
-print("Kedro OK — pipelines:", list(pipes))
+    if _HAS_REGRESSION:
+        try:
+            reg = create_regression_pipeline()
+        except Exception as e:
+            print(f"[pipeline_registry] Error al construir pipeline regression: {e}")
+        else:
+            pipelines["regression"] = reg
+
+    return pipelines
