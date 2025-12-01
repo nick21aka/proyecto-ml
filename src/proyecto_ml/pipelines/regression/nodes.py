@@ -39,20 +39,18 @@ from copy import deepcopy
 # ======================================================================
 # 1. SPLIT
 # ======================================================================
-import pandas as pd
-from sklearn.model_selection import train_test_split
-
 def split_supervised(df, target, test_size, random_state):
     X = df.drop(columns=[target])
     y = df[target]
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
+        X,
+        y,
         test_size=test_size,
-        random_state=random_state
+        random_state=random_state,
     )
 
-    # 🔥 Convertimos Series → DataFrame para que Kedro pueda guardarlos
+    # Convertimos Series → DataFrame para que Kedro pueda guardarlos
     y_train = pd.DataFrame(y_train, columns=[target])
     y_test = pd.DataFrame(y_test, columns=[target])
 
@@ -71,6 +69,7 @@ def make_preprocessor() -> ColumnTransformer:
     try:
         ohe = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
     except TypeError:
+        # Compatibilidad con versiones anteriores de sklearn
         ohe = OneHotEncoder(handle_unknown="ignore", sparse=False)
 
     return ColumnTransformer(
@@ -96,16 +95,20 @@ def build_model_space(random_state: int) -> Dict[str, Tuple[SkPipeline, Dict[str
     """Define los 5 modelos de regresión + grids de hiperparámetros."""
 
     pre = make_preprocessor()
-    space = {}
+    space: Dict[str, Tuple[SkPipeline, Dict[str, list]]] = {}
 
     # 1) Linear Regression (sin grid)
     pipe_lr = SkPipeline([("pre", pre), ("reg", LinearRegression())])
-    grid_lr = {}
+    grid_lr: Dict[str, list] = {}
     space["linreg"] = (pipe_lr, grid_lr)
 
     # 2) RandomForestRegressor
     pipe_rf = SkPipeline(
-        [("pre", pre), ("reg", RandomForestRegressor(random_state=random_state, n_jobs=-1))]
+        [
+            ("pre", pre),
+            # n_jobs=1 para que no consuma demasiados recursos en el contenedor
+            ("reg", RandomForestRegressor(random_state=random_state, n_jobs=1)),
+        ]
     )
     grid_rf = {
         "reg__n_estimators": [200, 400],
@@ -125,9 +128,7 @@ def build_model_space(random_state: int) -> Dict[str, Tuple[SkPipeline, Dict[str
     space["gb"] = (pipe_gb, grid_gb)
 
     # 4) KNeighborsRegressor
-    pipe_knn = SkPipeline(
-        [("pre", pre), ("reg", KNeighborsRegressor())]
-    )
+    pipe_knn = SkPipeline([("pre", pre), ("reg", KNeighborsRegressor())])
     grid_knn = {
         "reg__n_neighbors": [3, 5, 11],
         "reg__weights": ["uniform", "distance"],
@@ -135,9 +136,7 @@ def build_model_space(random_state: int) -> Dict[str, Tuple[SkPipeline, Dict[str
     space["knn"] = (pipe_knn, grid_knn)
 
     # 5) SVR
-    pipe_svr = SkPipeline(
-        [("pre", pre), ("reg", SVR())]
-    )
+    pipe_svr = SkPipeline([("pre", pre), ("reg", SVR())])
     grid_svr = {
         "reg__C": [0.5, 1.0, 5.0],
         "reg__epsilon": [0.1, 0.2],
@@ -160,7 +159,7 @@ def train_and_select(
 
     models = build_model_space(random_state)
     cv_results: Dict[str, Any] = {}
-    best_name = None
+    best_name: str | None = None
     best_r2 = -np.inf
 
     cv = KFold(n_splits=cv_folds, shuffle=True, random_state=random_state)
@@ -175,7 +174,7 @@ def train_and_select(
             cv=cv,
             scoring=SCORING,
             refit="r2",
-            n_jobs=-1,
+            n_jobs=1,          # ⚠️ IMPORTANTE: 1 worker dentro del contenedor
             verbose=0,
             return_train_score=True,
         )
@@ -204,7 +203,7 @@ def train_and_select(
     cv_results["_best_name"] = best_name
     cv_results["_best_cv_r2"] = float(best_r2)
 
-    return cv_results, best_name
+    return cv_results, best_name  # type: ignore[return-value]
 
 
 # ======================================================================
@@ -235,11 +234,6 @@ def refit_best(
 
 # ======================================================================
 # 6. EVALUACIÓN EN TEST
-#    -> genera:
-#       - dict de métricas
-#       - CSV con y_real / y_pred (regression_pred_vs_true)
-#       - figura real vs predicho
-#       - figura de residuales
 # ======================================================================
 def evaluate_on_test(best_model, X_test: pd.DataFrame, y_test: pd.DataFrame):
     # Asegurar 1D

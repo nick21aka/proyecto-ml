@@ -231,4 +231,95 @@ regression_resid_plot:
     format: png
     dpi: 150
     bbox_inches: tight
+# ========================
+#      CLUSTERING
+# ========================
 
+clustering_features:
+  type: pandas.ParquetDataset
+  filepath: data/03_primary/model_input_table.parquet
+
+# resultados numéricos (tabla con métricas por algoritmo)
+clustering_results_csv:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/clustering_results.csv
+  save_args:
+    index: false
+
+# etiquetas de clusters (no necesito guardarlas en disco)
+clustering_labels:
+  type: MemoryDataset
+
+# métricas agregadas por algoritmo -> se guardan como JSON
+clustering_silhouette:
+  type: json.JSONDataset
+  filepath: data/08_reporting/clustering_silhouette.json
+
+clustering_davies:
+  type: json.JSONDataset
+  filepath: data/08_reporting/clustering_davies.json
+
+clustering_calinski:
+  type: json.JSONDataset
+  filepath: data/08_reporting/clustering_calinski.json
+
+# Gráficos de clustering
+clustering_kmeans_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/clustering_kmeans.png
+
+clustering_dbscan_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/clustering_dbscan.png
+
+clustering_gmm_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/clustering_gmm.png
+
+clustering_dendrogram_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/clustering_dendrogram.png
+
+# ========================
+#   ELBOW METHOD
+# ========================
+
+clustering_elbow_data:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/clustering_elbow_data.csv
+  save_args:
+    index: false
+
+clustering_elbow_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/clustering_elbow.png
+
+# ========================
+#          PCA
+# ========================
+
+pca_explained_variance:
+  type: json.JSONDataset
+  filepath: data/08_reporting/pca_explained_variance.json
+
+pca_loadings:
+  type: pandas.CSVDataset
+  filepath: data/08_reporting/pca_loadings.csv
+  save_args:
+    index: false
+
+pca_variance_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/pca_variance.png
+
+pca_biplot_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/pca_biplot.png
+
+# ========================
+#          t-SNE
+# ========================
+
+tsne_2d_plot:
+  type: matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/tsne_2d.png

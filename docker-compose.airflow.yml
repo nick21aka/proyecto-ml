@@ -5,31 +5,50 @@ volumes:
 
 services:
   airflow-init:
-    image: apache/airflow:2.9.3
-    entrypoint: ["/bin/bash","-lc"]
-    command: "/opt/airflow/scripts/airflow-init.sh"
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    image: proyecto-ml-airflow:latest
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        echo "Inicializando base de datos de Airflow..."
+        airflow db migrate
+
+        echo "Creando usuario admin..."
+        airflow users create \
+          --username airflow \
+          --password airflow \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com || true
+
+        echo "Listo."
     environment:
       AIRFLOW_HOME: /opt/airflow
-      _AIRFLOW_WWW_USER_USERNAME: "airflow"
-      _AIRFLOW_WWW_USER_PASSWORD: "airflow"
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "sqlite:////opt/airflow/airflow.db"
     volumes:
       - airflow_data:/opt/airflow
-      - ./scripts:/opt/airflow/scripts
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
-
+      - ./:/opt/airflow/proyecto-ml        # 👈 monta el proyecto con src incluido
+    restart: "no"
 
   airflow-webserver:
-    image: apache/airflow:2.9.3
+    image: proyecto-ml-airflow:latest
     command: ["webserver"]
     depends_on:
       airflow-init:
         condition: service_completed_successfully
+    ports:
+      - "8081:8080"
     environment:
+      AIRFLOW_HOME: /opt/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "sqlite:////opt/airflow/airflow.db"
@@ -38,22 +57,22 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-    ports:
-      - "8081:8080"
     restart: always
     volumes:
       - airflow_data:/opt/airflow
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
+      - ./:/opt/airflow/proyecto-ml        # 👈 aquí también
 
   airflow-scheduler:
-    image: apache/airflow:2.9.3
+    image: proyecto-ml-airflow:latest
     command: ["scheduler"]
     depends_on:
       airflow-init:
         condition: service_completed_successfully
     environment:
+      AIRFLOW_HOME: /opt/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
       AIRFLOW__CORE__EXECUTOR: "SequentialExecutor"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "sqlite:////opt/airflow/airflow.db"
@@ -63,6 +82,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
+      - ./:/opt/airflow/proyecto-ml        # 👈 y aquí
 
 networks:
   default:

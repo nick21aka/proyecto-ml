@@ -1,0 +1,6 @@
+artifact_location: file:///opt/airflow/proyecto-ml/mlruns/723152446806154272
+creation_time: 1764547301505
+experiment_id: '723152446806154272'
+last_update_time: 1764547301505
+lifecycle_stage: active
+name: proyecto_ml

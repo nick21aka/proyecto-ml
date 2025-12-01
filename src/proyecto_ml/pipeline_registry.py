@@ -1,38 +1,33 @@
-# src/proyecto_ml/pipeline_registry.py
 from __future__ import annotations
+
 from kedro.pipeline import Pipeline
 
-# Pipelines principales
-from proyecto_ml.pipelines.dataprep import create_pipeline as create_dataprep_pipeline
-from proyecto_ml.pipelines.classification import create_pipeline as create_classification_pipeline
-
-# Import seguro de regression
-try:
-    from proyecto_ml.pipelines.regression import create_pipeline as create_regression_pipeline
-    _HAS_REGRESSION = True
-except Exception as e:
-    print(f"[pipeline_registry] Aviso: no se pudo importar regression: {e}")
-    _HAS_REGRESSION = False
+from proyecto_ml.pipelines.data_engineering import pipeline as de_pipeline
+from proyecto_ml.pipelines.classification import pipeline as classification_pipeline
+from proyecto_ml.pipelines.regression import pipeline as regression_pipeline
+from proyecto_ml.pipelines.clustering import pipeline as clustering_pipeline
 
 
 def register_pipelines() -> dict[str, Pipeline]:
-    """Registra todos los pipelines disponibles en el proyecto."""
+    """Registra los pipelines disponibles en el proyecto."""
 
-    dp = create_dataprep_pipeline()
-    cls = create_classification_pipeline()
+    # 🔹 Pipelines individuales
+    data_engineering = de_pipeline.create_pipeline()
+    classification = classification_pipeline.create_pipeline()
+    regression = regression_pipeline.create_pipeline()
+    unsupervised = clustering_pipeline.create_pipeline()
 
-    pipelines: dict[str, Pipeline] = {
-        "dataprep": dp,
-        "classification": cls,
-        "__default__": cls,
+    # 🔹 Pipeline supervisado (clasificación + regresión)
+    supervised = classification + regression
+
+    # 🔹 Pipeline completo (para el DAG proyecto_ml_full_pipeline)
+    full_pipeline = data_engineering + supervised + unsupervised
+
+    return {
+        "data_engineering": data_engineering,
+        "classification": classification,
+        "regression": regression,
+        "supervised_learning": supervised,
+        "unsupervised_learning": unsupervised,
+        "__default__": full_pipeline,
     }
-
-    if _HAS_REGRESSION:
-        try:
-            reg = create_regression_pipeline()
-        except Exception as e:
-            print(f"[pipeline_registry] Error al construir pipeline regression: {e}")
-        else:
-            pipelines["regression"] = reg
-
-    return pipelines

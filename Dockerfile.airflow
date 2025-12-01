@@ -1,8 +1,23 @@
 FROM apache/airflow:2.9.3
 
-USER root
-RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/lists/*
+# 1) Instalar dependencias de Kedro respetando las versiones de Airflow
 USER airflow
 
-COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+ARG AIRFLOW_VERSION=2.9.3
+ARG PYTHON_VERSION=3.12
+ARG CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+
+COPY requirements.txt /opt/airflow/requirements.txt
+
+RUN pip install --no-cache-dir \
+    -r /opt/airflow/requirements.txt \
+    --constraint "${CONSTRAINT_URL}"
+
+# 2) Copiar el proyecto completo
+USER root
+WORKDIR /opt/airflow
+COPY . /opt/airflow/
+RUN chown -R airflow:root /opt/airflow
+
+# 3) Volver a usuario airflow
+USER airflow

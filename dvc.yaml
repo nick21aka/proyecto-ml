@@ -35,3 +35,18 @@ stages:
 metrics:
   - data/08_reporting/classification_test_metrics.json
   - data/08_reporting/regression_test_metrics.json
+
+ unsupervised_learning:
+    cmd: kedro run --pipeline=unsupervised_learning
+    deps:
+      - data/05_model_input/clustering_features.parquet
+      - src/proyecto_ml/pipelines/clustering
+    outs:
+      - data/08_reporting/clustering_results.csv
+      - data/08_reporting/clustering_elbow_data.csv
+      - data/08_reporting/pca_loadings.csv
+      - data/08_reporting/pca_explained_variance.json
+      - data/08_reporting/tsne_2d_plot.png
+    metrics:
+      - data/08_reporting/clustering_results.csv:
+          cache: false

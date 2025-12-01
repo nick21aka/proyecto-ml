@@ -1,0 +1,6 @@
+artifact_location: file:///opt/airflow/proyecto-ml/mlruns/0
+creation_time: 1764547301233
+experiment_id: '0'
+last_update_time: 1764547301233
+lifecycle_stage: active
+name: Default

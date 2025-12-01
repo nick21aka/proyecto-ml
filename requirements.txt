@@ -1,7 +1,9 @@
 kedro[jupyter]~=1.0
 kedro-viz>=6.7.0
-kedro-datasets[pandas,matplotlib,plotly]>=3.0
-pandas>=2.2
+
+# 🔴 CAMBIO 1: ya lo hicimos antes, pero asegúrate:
+pandas==2.1.4
+
 numpy>=1.26
 pyarrow>=15
 scikit-learn~=1.5
@@ -12,4 +14,10 @@ ipython>=8.10
 jupyterlab>=3.0
 notebook
 kedro>=0.19
-scikit-learn>=1.0
+kedro-mlflow
+
+# 🔴 CAMBIO 2: evitar el conflicto con lxml
+# ANTES: kedro-datasets[pandas,matplotlib,plotly]>=3.0
+kedro-datasets>=3.0
+
+dvc

@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
-echo "===> Migrando DB..."
-airflow db migrate
-echo "===> Creando usuario admin..."
+export AIRFLOW_HOME=/opt/airflow
+
+echo "Inicializando Base de Datos de Airflow..."
+airflow db init
+
+echo "Creando usuario administrador..."
 airflow users create \
-  --username "${_AIRFLOW_WWW_USER_USERNAME}" \
-  --firstname "Rox" \
-  --lastname "Ana" \
-  --role "Admin" \
-  --email "admin@example.com" \
-  --password "${_AIRFLOW_WWW_USER_PASSWORD}" || true
-echo "===> Listo."
+  --username airflow \
+  --password airflow \
+  --firstname Admin \
+  --lastname User \
+  --role Admin \
+  --email admin@example.com
+
+echo "Inicialización finalizada."
