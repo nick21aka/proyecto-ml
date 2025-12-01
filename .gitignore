@@ -47,3 +47,4 @@ data/**
 
 # Artefactos que no hace falta versionar
 .viz/
+proyecto-ml/
